@@ -39,5 +39,4 @@ export class Task implements ITaskModel {
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
 
-
 export const TaskModel = model<Task>('Task', TaskSchema);

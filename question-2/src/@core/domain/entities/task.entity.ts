@@ -11,7 +11,7 @@ export enum TaskStatus {
 export interface ITask {
   session: string;
   timeInspect: number;
-  status: SessionStatus;
+  status: TaskStatus;
   group: GroupType;
   createdAt: Date;
   updatedAt: Date;
