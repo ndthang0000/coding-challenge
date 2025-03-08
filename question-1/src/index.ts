@@ -1,39 +1,41 @@
-
-import hash from 'hash-it';
+import hash from 'hash-it'
 
 // Using this function to optimize memory usage for Map keys
 function hashLongString(str: string): string {
   if (str.length < 1000) {
     return str
   }
-  return `h-${hash(str)}`;
+  return `h-${hash(str)}`
 }
 
 function firstUnique(arr: string[]): string | null {
   // Create a frequency map to count occurrences of each string
-  const frequencyMap = new Map<string, number>();
+  const frequencyMap = new Map<string, number>()
 
   // First pass: Count occurrences of each string
   for (const element of arr) {
-    frequencyMap.set(element, (frequencyMap.get(hashLongString(element)) || 0) + 1);
+    const key = hashLongString(element)
+    frequencyMap.set(key, (frequencyMap.get(key) || 0) + 1)
   }
 
   // Second pass: Find the first string with count 1
   for (const element of arr) {
-    if (frequencyMap.get(element) === 1) {
-      return element;
+    const key = hashLongString(element)
+    if (frequencyMap.get(key) === 1) {
+      return element
     }
   }
 
   // If no unique element is found, return null
-  return null;
+  return null
 }
 
 // Example usage
-console.log(firstUnique(["apple", "banana", "apple", "orange", "banana", "grape"])); // Output: "orange"
-console.log(firstUnique(["a", "b", "a", "b", "c", "d", "c"])); // Output: "d"
-console.log(firstUnique(["x", "y", "x", "y"])); // Output: null
+console.log(firstUnique(['apple', 'banana', 'apple', 'orange', 'banana', 'grape'])) // Output: "orange"
+console.log(firstUnique(['a', 'b', 'a', 'b', 'c', 'd', 'c'])) // Output: "d"
+console.log(firstUnique(['x', 'y', 'x', 'y'])) // Output: null
 
+export { firstUnique }
 /*
 Time Complexity:
 - O(N) where N is the length of the array.
