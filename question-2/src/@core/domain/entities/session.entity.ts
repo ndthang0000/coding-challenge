@@ -58,4 +58,8 @@ export default class Session extends Entity<ISession> {
   public addTask(task: string) {
     this.props.tasks = [...this.props.tasks, task];
   }
+
+  public updateStatus(status: SessionStatus) {
+    this.props.status = status;
+  }
 }

@@ -1,11 +1,12 @@
 // src/search/dto/search.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsString, IsNumber, Matches } from 'class-validator';
+import { IsString, IsNumber, Matches, IsOptional } from 'class-validator';
 
 export class CreateTaskDto {
-  @ApiProperty({ example: 'A-ABA-BB1234', description: 'A string in the format A-XXX-XXXXXX (A-Z, 0-9)', required: true })
+  @ApiProperty({ example: 'A-ABA-BB1234', description: 'A string in the format A-XXX-XXXXXX (A-Z, 0-9)', required: false })
   @IsString()
+  @IsOptional()
   @Matches(/^[A-Z]-[A-Z0-9]{3}-[A-Z0-9]{6}$/, {
     message: 'sessionKey must match format A-XXX-XXXXXX',
   })

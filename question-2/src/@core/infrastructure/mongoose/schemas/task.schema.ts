@@ -17,7 +17,7 @@ export interface ITaskModel {
 @Schema({ timestamps: true })
 export class Task implements ITaskModel {
 
-  @Prop({ type: Types.ObjectId, ref: 'Session' })
+  @Prop({ type: Types.ObjectId, ref: 'sessions' })
   session: string;
 
   @Prop({ required: true })

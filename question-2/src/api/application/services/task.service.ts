@@ -1,17 +1,19 @@
 // src/services/task.service.ts
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import TaskRepository from 'src/@core/infrastructure/mongoose/repository/task.repository';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { SessionService } from './session.service';
 import { GroupType, SessionStatus } from 'src/@core/domain/entities/session.entity';
 import Task, { TaskStatus } from 'src/@core/domain/entities/task.entity';
+import EntityID from 'src/@core/domain/value-objects/EntityID';
 
 @Injectable()
 export class TaskService {
   constructor(
     @Inject() private readonly taskRepo: TaskRepository,
-    @Inject() private readonly sessionService: SessionService,
+    @Inject(forwardRef(() => SessionService))
+    private readonly sessionService: SessionService,
     @InjectQueue('taskQueue') private readonly taskQueue: Queue,
   ) { }
 
@@ -21,14 +23,12 @@ export class TaskService {
       if (!session) {
         throw new BadRequestException(`Not found session of this Session key [${sessionKey}]`);
       }
-      if (session.status == SessionStatus.DONE) {
-        throw new BadRequestException('The queue is done. Please create a new session first');
-      }
+
       await this.taskQueue.add('createTask', { session, timeInspect, group });
-      return { message: 'Task creation queued 1' };
+      return { message: 'Task creation queued' };
     }
     else {
-      const session = await this.sessionService.findOneByFilter({ status: SessionStatus.IN_PROGRESS, group: group });
+      const session = await this.sessionService.findOneByFilter({ group: group });
       if (!session) {
         throw new BadRequestException('Nothing any session is working. Please create a session first');
       }
@@ -48,5 +48,34 @@ export class TaskService {
     });
     const task = await this.taskRepo.add(taskEntity);
     await this.sessionService.addTaskToSession(session, task.id.value);
+    await this.taskQueue.add('updateStatusTask', { taskId: task.id.value, timeInspect });
+    return task;
+  }
+
+  async updateTaskStatus(taskId: string, status: TaskStatus) {
+    const task = await this.taskRepo.findOneById(EntityID.create({ value: taskId }));
+    if (!task) {
+      return
+    }
+    task.updateStatus(status);
+    await this.taskRepo.update(task);
+    const allTaskOfSession = await this.taskRepo.findTaskByFilter({ session: task.session }, { status: true, _id: true, session: true });
+    if (allTaskOfSession.every((t) => t.status === 'DONE')) {
+      await this.sessionService.updateSessionStatus(task.session, SessionStatus.DONE);
+    }
+    return task;
+  }
+
+  mappingTaskToResponse(task: any) {
+    return {
+      id: task?.id?.value || task._id || task,
+      session: task.session,
+      timeInspect: task.timeInspect,
+      group: task.group,
+      status: task.status,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+    };
+
   }
 }

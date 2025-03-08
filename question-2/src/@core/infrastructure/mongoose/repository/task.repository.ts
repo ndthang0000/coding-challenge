@@ -14,6 +14,11 @@ export default class TaskRepository extends Repository<Task, ITaskModel> impleme
   }
 
 
+  async findTaskByFilter(filter: any, selected: any): Promise<Task[] | null> {
+    const doc = await this._model.find(filter, selected).exec();
+    return doc.map((d) => this.convertDocumentToEntity(d));
+  }
+
   protected convertDocumentToEntity(persist: TaskDocument): Task {
     const { _id, ...props } = persist.toObject();
 

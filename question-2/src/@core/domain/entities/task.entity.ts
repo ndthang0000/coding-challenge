@@ -45,4 +45,8 @@ export default class Task extends Entity<ITask> {
   get updatedAt() {
     return this.props.updatedAt;
   }
+
+  public updateStatus(status: TaskStatus) {
+    this.props.status = status;
+  }
 }

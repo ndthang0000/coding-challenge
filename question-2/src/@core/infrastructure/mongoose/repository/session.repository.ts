@@ -53,7 +53,7 @@ export default class SessionRepository extends Repository<Session, ISessionModel
         timeInspect: props.timeInspect,
         status: props.status,
         group: props.group,
-        tasks: props.tasks,
+        tasks: props.tasks || [],
         createdAt: props.createdAt,
         updatedAt: props.updatedAt,
       },
@@ -71,7 +71,7 @@ export default class SessionRepository extends Repository<Session, ISessionModel
       timeInspect: entity.timeInspect,
       status: entity.status,
       group: entity.group,
-      tasks: entity.tasks,
+      tasks: entity.tasks || [],
       createdAt: entity.createdAt || new Date(),
       updatedAt: entity.updatedAt || new Date(),
     };
