@@ -89,7 +89,7 @@ export class SessionService {
       timeInspect: session.timeInspect,
       group: session.group,
       status: session.status,
-      tasks: session.tasks.map(this.taskService.mappingTaskToResponse),
+      tasks: session.tasks.map(this.taskService.convertDocumentToResponse),
       createdAt: session.createdAt,
       updatedAt: session.updatedAt,
     };

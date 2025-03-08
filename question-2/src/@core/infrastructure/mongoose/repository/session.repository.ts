@@ -31,7 +31,7 @@ export default class SessionRepository extends Repository<Session, ISessionModel
 
   public async findBySessionKey(sessionKey: string): Promise<Session[]> {
     const match = new RegExp(`${sessionKey}`);
-    const doc = await this._model.find({ sessionKey: match }).exec();
+    const doc = await this._model.find({ sessionKey: match }).populate('tasks').exec();
     return doc.map((d) => this.convertDocumentToEntity(d));
   }
 

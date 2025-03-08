@@ -7,6 +7,8 @@ import { SessionService } from './session.service';
 import { GroupType, SessionStatus } from 'src/@core/domain/entities/session.entity';
 import Task, { TaskStatus } from 'src/@core/domain/entities/task.entity';
 import EntityID from 'src/@core/domain/value-objects/EntityID';
+import { TaskDocument } from 'src/@core/infrastructure/mongoose/schemas/task.schema';
+import { TaskResponse } from '@api/presentation/response/task.response';
 
 @Injectable()
 export class TaskService {
@@ -66,9 +68,9 @@ export class TaskService {
     return task;
   }
 
-  mappingTaskToResponse(task: any) {
+  mappingTaskToResponse(task: Task): TaskResponse {
     return {
-      id: task?.id?.value || task._id || task,
+      id: task?.id?.value,
       session: task.session,
       timeInspect: task.timeInspect,
       group: task.group,
@@ -76,6 +78,18 @@ export class TaskService {
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
     };
+  }
 
+  convertDocumentToResponse(persist: any): TaskResponse {
+
+    return {
+      id: String(persist._id),
+      session: persist.session,
+      timeInspect: persist.timeInspect,
+      group: persist.group,
+      status: persist.status,
+      createdAt: persist.createdAt,
+      updatedAt: persist.updatedAt,
+    };
   }
 }
