@@ -35,6 +35,15 @@ export default class SessionRepository extends Repository<Session, ISessionModel
     return doc.map((d) => this.convertDocumentToEntity(d));
   }
 
+  public async findOneByFilter(filter: any): Promise<Session | null> {
+    const doc = await this._model.findOne(filter).exec();
+    if (!doc) {
+      return null;
+    }
+    return this.convertDocumentToEntity(doc);
+  }
+
+
   protected convertDocumentToEntity(persist: SessionDocument): Session {
     const { _id, ...props } = persist.toObject();
 
@@ -62,6 +71,7 @@ export default class SessionRepository extends Repository<Session, ISessionModel
       timeInspect: entity.timeInspect,
       status: entity.status,
       group: entity.group,
+      tasks: entity.tasks,
       createdAt: entity.createdAt || new Date(),
       updatedAt: entity.updatedAt || new Date(),
     };

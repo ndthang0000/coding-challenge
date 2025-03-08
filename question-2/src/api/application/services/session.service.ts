@@ -1,4 +1,5 @@
 // src/services/session.service.ts
+import { SessionResponse } from '@api/presentation/response/session.response';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import Session, { GroupType, SessionStatus } from 'src/@core/domain/entities/session.entity';
 import EntityID from 'src/@core/domain/value-objects/EntityID';
@@ -11,7 +12,7 @@ export class SessionService {
     @Inject() private readonly sessionRepo: SessionRepository,
   ) { }
 
-  async findDetailSession(id: string) {
+  async findDetailSession(id: string): Promise<SessionResponse | null> {
     const session = await this.sessionRepo.findDetailSession(id);
     if (!session) {
       throw new BadRequestException('Session not found');
@@ -19,13 +20,21 @@ export class SessionService {
     return this.mappingSessionToResponse(session);
   }
 
-  async findSessionByKey(sessionKey: string) {
+  async findSessionByKey(sessionKey: string): Promise<SessionResponse[]> {
     const listSession = await this.sessionRepo.findBySessionKey(sessionKey);
     return listSession.map(this.mappingSessionToResponse);
   }
 
-  async findOneSessionByKey(sessionKey: string) {
+  async findOneSessionByKey(sessionKey: string): Promise<SessionResponse | null> {
     const session = await this.sessionRepo.findOneBySessionKey(sessionKey);
+    if (!session) {
+      return null;
+    }
+    return this.mappingSessionToResponse(session);
+  }
+
+  async findOneByFilter(filter: any): Promise<SessionResponse | null> {
+    const session = await this.sessionRepo.findOneByFilter(filter);
     if (!session) {
       return null;
     }
@@ -45,7 +54,18 @@ export class SessionService {
     return await this.sessionRepo.add(session);
   }
 
-  mappingSessionToResponse(session: Session) {
+  async addTaskToSession(session: SessionResponse, taskId: string) {
+    const sessionEntity = await this.sessionRepo.findOneById(EntityID.create({ value: session.id }));
+
+    if (!sessionEntity) {
+      throw new BadRequestException('Session not found');
+    }
+    sessionEntity.addTask(taskId);
+    await this.sessionRepo.update(sessionEntity);
+
+  }
+
+  mappingSessionToResponse(session: Session): SessionResponse {
     return {
       id: session.id?.value,
       sessionKey: session.sessionKey,

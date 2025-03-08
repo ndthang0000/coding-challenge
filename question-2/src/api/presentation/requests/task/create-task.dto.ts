@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsString, IsNumber, Matches } from 'class-validator';
 
-export class CreateSessionDto {
+export class CreateTaskDto {
   @ApiProperty({ example: 'A-ABA-BB1234', description: 'A string in the format A-XXX-XXXXXX (A-Z, 0-9)', required: true })
   @IsString()
   @Matches(/^[A-Z]-[A-Z0-9]{3}-[A-Z0-9]{6}$/, {
@@ -16,7 +16,7 @@ export class CreateSessionDto {
   @Transform(({ value }) => value || '')
   group: string;
 
-  @ApiProperty({ example: 60 * 5 * 1000, description: 'Time Inspect', required: true })
+  @ApiProperty({ example: 10 * 1000, description: 'Time complete task', required: true })
   @IsNumber()
   @Type(() => Number)
   @Transform(({ value }) => {

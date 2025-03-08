@@ -8,8 +8,8 @@ export class TaskProcessor {
 
   @Process('createTask')
   async handleCreateTask(job: Job) {
-    const { sessionKey, timeInspect, group } = job.data;
-    // await this.taskService.createTask(sessionKey, timeInspect, group);
+    const { session, timeInspect, group } = job.data;
+    await this.taskService.createTask(session, timeInspect, group);
   }
 
   @Process('updateTaskStatus')

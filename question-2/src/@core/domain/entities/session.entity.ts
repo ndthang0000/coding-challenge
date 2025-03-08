@@ -17,7 +17,7 @@ export interface ISession {
   timeInspect: number;
   status: SessionStatus;
   group: GroupType;
-  tasks: string[];
+  tasks: any[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -53,5 +53,9 @@ export default class Session extends Entity<ISession> {
 
   get tasks() {
     return this.props.tasks;
+  }
+
+  public addTask(task: string) {
+    this.props.tasks = [...this.props.tasks, task];
   }
 }
