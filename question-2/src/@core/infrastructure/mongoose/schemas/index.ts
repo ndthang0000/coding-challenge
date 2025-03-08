@@ -1,3 +1,7 @@
-import { TestSchema, Test } from './test';
+import { SessionSchema, Session } from './session.schema';
+import { TaskSchema, Task } from './task.schema';
 
-export const NameAndSchema = [{ name: Test.name, schema: TestSchema }];
+export const NameAndSchema = [
+  { name: Task.name, schema: TaskSchema, },
+  { name: Session.name, schema: SessionSchema, },
+];

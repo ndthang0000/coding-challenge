@@ -1,2 +1,4 @@
-import TestRepository from './test';
-export const RepositoryServices = [TestRepository];
+import SessionRepository from './session.repository';
+export const RepositoryServices = [
+  SessionRepository,
+];

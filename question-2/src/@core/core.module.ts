@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RepositoryServices } from './infrastructure/mongoose/repository';
 import { NameAndSchema } from './infrastructure/mongoose/schemas';
 import RedisCache from './infrastructure/redis/RedisCache';
-
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -19,8 +19,11 @@ import RedisCache from './infrastructure/redis/RedisCache';
       tls: process.env.DB_SSL === 'true',
     }),
     MongooseModule.forFeature([...NameAndSchema]),
+    BullModule.forRoot({ redis: { host: configData.redis.host, port: configData.redis.port } }),
+    BullModule.registerQueue({ name: 'sessionQueue' }),
+    BullModule.registerQueue({ name: 'taskQueue' }),
   ],
   providers: [...RepositoryServices, RedisCache],
-  exports: [ConfigModule, CoreModule, ...RepositoryServices, RedisCache],
+  exports: [ConfigModule, CoreModule, ...RepositoryServices, RedisCache, BullModule],
 })
 export class CoreModule { }

@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TestController } from './application/controllers/test.controller';
 import { CommandHandler } from './application/commands';
 import { QueryHandler } from './application/queries';
 import { ApplicationServices } from './application/services';
 import { CoreModule } from 'src/@core/core.module';
+import { SessionController } from './application/controllers/session.controller';
 
 @Module({
     imports: [CqrsModule, CoreModule],
-    controllers: [TestController],
+
+  controllers: [SessionController],
     providers: [...ApplicationServices, ...CommandHandler, ...QueryHandler],
     exports: [ApiModule],
 })

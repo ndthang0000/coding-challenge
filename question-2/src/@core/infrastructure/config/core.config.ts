@@ -11,7 +11,8 @@ export default function coreConfig() {
     env: process.env.NODE_ENV || 'local',
     redis: {
       host: process.env.REDIS_URL || 'localhost',
-      prefix: process.env.PROJECT_NAME,
+      prefix: process.env.PROJECT_NAME || 'PAVE-interview',
+      port: parseInt(process.env.REDIS_PORT) || 6379,
     },
     projectName: process.env.PROJECT_NAME || 'PAVE-interview',
   }

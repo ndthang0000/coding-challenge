@@ -1,6 +1,6 @@
 import { HydratedDocument, Model } from 'mongoose';
 import { IEntity } from 'src/@core/domain/entities/Entity';
-import IRepository from 'src/@core/domain/repositories/IRepository';
+import IRepository from 'src/@core/domain/repositories/i.repository';
 import EntityID from 'src/@core/domain/value-objects/EntityID';
 
 export default abstract class Repository<E extends IEntity, IModel> implements IRepository<E> {
